@@ -67,6 +67,7 @@
                   ]"
                   type="email"
                   placeholder="mail@mail.com"
+                  @change="validateEmail"
                 >
                 <p class="text-red-500 text-xs italic">
                   {{ errors[0] }}
@@ -142,6 +143,7 @@ export default {
   components: {
     ValidationProvider, ValidationObserver
   },
+  middleware: 'unauthenticated',
   data () {
     return {
       form: {
@@ -152,55 +154,38 @@ export default {
         password_confirmation: ''
       },
       button: 'Sign Up',
-      validateErrors: []
+      // server side validation errors
+      validateErrors: [],
+      validEmail: true
     }
   },
   methods: {
     async register () {
       const isValid = await this.$refs.registrationForm.validate()
-      if (isValid) {
+      if (isValid && this.validEmail) {
         this.button = 'Signing up ...'
         this.validateErrors = []
         const vm = this
-        const data = {
+        this.$axios.post('/signup', {
           campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
-          data: { email: this.form.email }
-        }
-        await this.$axios.post('/check-user', data).then((response) => {
-          if (response.data.data.status === 'OK') {
-            vm.$axios.post('/signup', {
-              campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
-              data: this.$data.form
-            })
-              .then((response) => {
-                vm.$store
-                  .dispatch('user/loginUser', response.data).then((_e) => {
-                    vm.$toaster.success(response.data.message)
-                    vm.clearForm()
-                    vm.$router.push('/')
-                  })
-              }).catch((error) => {
-                console.log(error.response.data)
-                if (error.response && error.response.status === 400) {
-                  this.$toaster.error(error.response.data.validateErrors[0].message)
-                } else {
-                  this.$toaster.error('An Error Occurred, try again')
-                }
-                this.button = 'Sign Up'
-              })
-          } else {
-            this.validateErrors = { email: ['Invalid email address'] }
-            this.button = 'Sign Up'
-          }
-        }).catch((error) => {
-          console.log(error.response)
-          if (error.response && error.response.status === 400) {
-            this.validateErrors = { email: ['Email address is required'] }
-          } else {
-            this.$toaster.error('An Error Occurred, try again')
-          }
-          this.button = 'Sign Up'
+          data: this.$data.form
         })
+          .then((response) => {
+            this.$store
+              .dispatch('user/loginUser', response.data).then((_e) => {
+                vm.$toaster.success(response.data.message)
+                vm.clearForm()
+                vm.$router.push('/')
+              })
+          }).catch((error) => {
+            console.log(error.response.data)
+            if (error.response && error.response.status === 400) {
+              this.$toaster.error(error.response.data.validateErrors[0].message)
+            } else {
+              this.$toaster.error('An Error Occurred, try again')
+            }
+            this.button = 'Sign Up'
+          })
       }
     },
     clearForm () {
@@ -208,6 +193,25 @@ export default {
       Object.keys(this.form).forEach(function (key, index) {
         self.form[key] = ''
       })
+    },
+    async validateEmail () {
+      const data = {
+        campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
+        data: { email: this.form.email }
+      }
+      if (this.form.email !== '') {
+        await this.$axios.post('/check-user', data).then((response) => {
+          if (response.data.data.status === 'OK') {
+            this.validEmail = true
+            this.validateErrors = []
+          } else {
+            this.validateErrors = { email: ['Invalid email address, enter another email'] }
+            this.validEmail = true
+          }
+        })
+      } else {
+        this.validateErrors = []
+      }
     }
   }
 }

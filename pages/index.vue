@@ -2,33 +2,47 @@
   <div class="container">
     <div>
       <Logo />
-      <h1 class="title">
+      <h1 class="title text-center">
         raisely
       </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <div class="flex flex-col justify-center">
+        <h3 class="subtitle text-center">
+          {{ user.firstName +' '+ user.lastName }}
+        </h3>
+        <p>{{ user.email }}</p>
+        <div class="links flex justify-center">
+          <a
+            href="#"
+            rel="noopener noreferrer"
+            class="button--grey"
+            @click.prevent="logout"
+          >
+            Logout
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  middleware: 'authenticated',
+  computed: {
+    user () {
+      return this.$store.state.user.currentUser
+    }
+  },
+  methods: {
+    logout () {
+      // * delete user and token, but recommended to delete/revoke token on server too
+      const vm = this
+      this.$store.dispatch('user/logOut').then((_e) => {
+        vm.$router.push('/register')
+      })
+    }
+  }
+}
 </script>
 
 <style>
