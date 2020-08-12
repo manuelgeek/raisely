@@ -1,6 +1,6 @@
 # raisely
 
-> Front-end developer at Raisley interview task
+> Front-end developer at Raisley interview task done with Nuxt.js
 
 ## Build Setup
 
@@ -18,5 +18,16 @@ $ npm run start
 # generate static project
 $ npm run generate
 ```
+
+## Libraries and Tools
+- axios
+- vee-validate
+- tailwindcss
+- vue-toaster
+- cookie-universal-nuxt
+- eslint
+- jest
+- Github Actions
+- Heroku hosting
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
