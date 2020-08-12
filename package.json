@@ -13,7 +13,11 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.0",
-    "nuxt": "^2.14.0"
+    "cookie-universal-nuxt": "^2.1.4",
+    "nuxt": "^2.14.0",
+    "v-toaster": "^1.0.3",
+    "vue": "^2.6.11",
+    "vee-validate": "3.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.1.0",

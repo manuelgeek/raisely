@@ -5,46 +5,127 @@
         <div class="text-center font-semibold text-black py-10 text-3xl">
           Register
         </div>
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="firstname">
-              First Name
-            </label>
-            <input id="firstname" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="First Name">
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="lastname">
-              Last Name
-            </label>
-            <input id="lastname" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Last Name">
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-              Email
-            </label>
-            <input id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" placeholder="mail@mail.com">
-          </div>
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-              Password
-            </label>
-            <input id="password" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="************">
-            <p class="text-red-500 text-xs italic">
-              Please choose a password.
-            </p>
-          </div>
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password_c">
-              Confirm Password
-            </label>
-            <input id="password_c" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="************">
-          </div>
-          <div class="flex items-center justify-between">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-              Sign Up
-            </button>
-          </div>
-        </form>
+        <ValidationObserver ref="registrationForm">
+          <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" @submit.prevent="register">
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="firstname">
+                First Name
+              </label>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <input
+                  id="firstname"
+                  v-model="form.firstName"
+                  :class="[
+                    'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline',
+                    validateErrors.firstName ? 'border-red-500' : ''
+                  ]"
+                  type="text"
+                  placeholder="First Name"
+                >
+                <p class="text-red-500 text-xs italic">
+                  {{ errors[0] }}
+                </p>
+              </ValidationProvider>
+              <p v-if="validateErrors.firstName" class="text-red-500 text-xs italic">
+                {{ validateErrors.firstName[0] }}
+              </p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="lastname">
+                Last Name
+              </label>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <input
+                  id="lastname"
+                  v-model="form.lastName"
+                  :class="[
+                    'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline',
+                    validateErrors.lastName ? 'border-red-500' : ''
+                  ]"
+                  type="text"
+                  placeholder="Last Name"
+                >
+                <p class="text-red-500 text-xs italic">
+                  {{ errors[0] }}
+                </p>
+              </ValidationProvider>
+              <p v-if="validateErrors.lastName" class="text-red-500 text-xs italic">
+                {{ validateErrors.lastName[0] }}
+              </p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                Email
+              </label>
+              <ValidationProvider v-slot="{ errors }" rules="required|email">
+                <input
+                  id="email"
+                  v-model="form.email"
+                  :class="[
+                    'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline',
+                    validateErrors.email ? 'border-red-500' : ''
+                  ]"
+                  type="email"
+                  placeholder="mail@mail.com"
+                >
+                <p class="text-red-500 text-xs italic">
+                  {{ errors[0] }}
+                </p>
+              </ValidationProvider>
+              <p v-if="validateErrors.email" class="text-red-500 text-xs italic">
+                {{ validateErrors.email[0] }}
+              </p>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                Password
+              </label>
+              <ValidationProvider v-slot="{ errors }" rules="required|min:6" vid="password">
+                <input
+                  id="password"
+                  v-model="form.password"
+                  :class="[
+                    'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline',
+                    validateErrors.password ? 'border-red-500' : ''
+                  ]"
+                  type="password"
+                  placeholder="************"
+                >
+                <p class="text-red-500 text-xs italic">
+                  {{ errors[0] }}
+                </p>
+              </ValidationProvider>
+              <p v-if="validateErrors.password" class="text-red-500 text-xs italic">
+                {{ validateErrors.password[0] }}
+              </p>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="password_c">
+                Confirm Password
+              </label>
+              <ValidationProvider v-slot="{ errors }" rules="required|confirmed:password">
+                <input
+                  id="password_c"
+                  v-model="form.password_confirmation"
+                  :class="[
+                    'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline',
+                    validateErrors.password_confirmation ? 'border-red-500' : ''
+                  ]"
+                  type="password"
+                  placeholder="************"
+                >
+                <p class="text-red-500 text-xs italic">
+                  {{ errors[0] }}
+                </p>
+              </ValidationProvider>
+            </div>
+            <div class="flex items-center justify-between">
+              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                {{ button }}
+              </button>
+            </div>
+          </form>
+        </ValidationObserver>
         <p class="text-center text-gray-500 text-xs">
           &copy;2020 Raisely. All rights reserved.
         </p>
@@ -54,8 +135,81 @@
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+
 export default {
-  name: 'Register'
+  name: 'Register',
+  components: {
+    ValidationProvider, ValidationObserver
+  },
+  data () {
+    return {
+      form: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+      },
+      button: 'Sign Up',
+      validateErrors: []
+    }
+  },
+  methods: {
+    async register () {
+      const isValid = await this.$refs.registrationForm.validate()
+      if (isValid) {
+        this.button = 'Signing up ...'
+        this.validateErrors = []
+        const vm = this
+        const data = {
+          campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
+          data: { email: this.form.email }
+        }
+        await this.$axios.post('/check-user', data).then((response) => {
+          if (response.data.data.status === 'OK') {
+            vm.$axios.post('/signup', {
+              campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
+              data: this.$data.form
+            })
+              .then((response) => {
+                vm.$store
+                  .dispatch('user/loginUser', response.data).then((_e) => {
+                    vm.$toaster.success(response.data.message)
+                    vm.clearForm()
+                    vm.$router.push('/')
+                  })
+              }).catch((error) => {
+                console.log(error.response.data)
+                if (error.response && error.response.status === 400) {
+                  this.$toaster.error(error.response.data.validateErrors[0].message)
+                } else {
+                  this.$toaster.error('An Error Occurred, try again')
+                }
+                this.button = 'Sign Up'
+              })
+          } else {
+            this.validateErrors = { email: ['Invalid email address'] }
+            this.button = 'Sign Up'
+          }
+        }).catch((error) => {
+          console.log(error.response)
+          if (error.response && error.response.status === 400) {
+            this.validateErrors = { email: ['Email address is required'] }
+          } else {
+            this.$toaster.error('An Error Occurred, try again')
+          }
+          this.button = 'Sign Up'
+        })
+      }
+    },
+    clearForm () {
+      const self = this
+      Object.keys(this.form).forEach(function (key, index) {
+        self.form[key] = ''
+      })
+    }
+  }
 }
 </script>
 
