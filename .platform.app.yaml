@@ -19,6 +19,11 @@ mounts:
     source: local
     source_path: uploads
 
+
+
+disk: 128
+
+
 web:
   commands:
     start: "nuxt start"
