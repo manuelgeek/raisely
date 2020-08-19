@@ -21,6 +21,7 @@ $ npm run generate
 
 ## Libraries and Tools
 - axios
+- vuex
 - vee-validate
 - tailwindcss
 - vue-toaster
