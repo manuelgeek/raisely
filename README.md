@@ -1,6 +1,6 @@
 # raisely
 
-> Front-end developer at Raisley interview task done with Nuxt.js
+> A simple Registration and auth done with Nuxt.js
 
 ## Build Setup
 
